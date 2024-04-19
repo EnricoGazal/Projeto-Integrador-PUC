@@ -13,7 +13,7 @@ def obter_num_float(mensagem):
         print('\nINSIRA UM VALOR NUMÉRICO POSITIVO E ACIMA DE 0!')
         valor = float(input(mensagem))
     return valor
-
+    
 print('SEJA BEM-VINDO AO INSTOCK!')
 print('PARA INICIARMOS FORNEÇA AS INFORMAÇÕES ABAIXO POR FAVOR\n')
 
@@ -40,7 +40,7 @@ while True:
             
             #Fórmula Preço de Venda
             PV = CP / (1 - ((CF + CV + IV + ML) / 100))
-
+            
             print()
             tabela_cabecalho = ["DESCRIÇÃO", "VALOR", "%"]
             tabela_resultados = [
@@ -52,42 +52,41 @@ while True:
                 ["F. Impostos", (IV * PV) / 100, IV],
                 ["G. Outros custos (D+E+F)", ((PV * CF) / 100)+((CV * PV) / 100)+((IV * PV) / 100), CF + CV + IV],
                 ["H. Rentabilidade (C-G)", ((PV - CP) - (((PV * CF) / 100) + ((CV * PV) / 100) + ((IV * PV) / 100))), ML]
-            ]
+            ]  
             print(tabulate(tabela_resultados, headers = tabela_cabecalho))
-
+            
+            
             #Faixa de lucro do produto
             rentabilidade = ((PV - CP) - (CF + CV + IV))
             if rentabilidade >= 0.20 * PV:
-              print('sua classificação é de nivel alto')
-              
+                print('\nSua classificação de rentabilidade é de nivel alto')
+                  
             elif rentabilidade >= 0.10 * PV < 0.20 * PV:
-              print('sua classificação é de nivel médio')
-              
+                print('\nSua classificação de rentabilidade é de nivel médio')
+                  
             elif rentabilidade > 0 * 100 < 0.10 * 100:
-              print('sua classificação é de nivel baixo')
-              
+                print('\nSua classificação de rentabilidade é de nivel baixo')
+                  
             elif rentabilidade == 0:
-              print('sua classificação é de nivel equilibrado')
-              
+                print('\nSua classificação de rentabilidade é de nivel equilibrado')
+                  
             else:
-              rentabilidade < 0 * 100
-              print('sua classificação é de prejuizo')
-              
+                rentabilidade < 0 * 100
+                print('\nSua classificação de rentabilidade é de prejuizo')
+                  
+                  
             #Opção de continuar
-            try:  
-                opcao = int(input('deseja continuar? ' ' 1 = sim ' ' 2 = nao'))
-                if opcao > 2 or opcao < 1:
-                    print('opção deve ser 1 ou 2')
+            continuar = input('\nDESEJA CONTINUAR UTILIZANDO O PROGRAMA? [S/N]: ').upper()
+            if continuar == 'N':
+                print('\nOBRIGADO POR USAR ESTE PROGRAMA!')
+                break
+            elif continuar != 'S' and continuar != 'N':
+                print('\nDIGITE SOMENTE OPÇÕES ENTRE "S" e "N"!')
                 
-                elif opcao == 1:
-                    print('ok')
+            print('\nINSIRA AS INFORMAÇÕES DO PRÓXIMO PRODUTO')
+            cod_produto = obter_input("Digite o código do produto: ") #chave primária
+            nome_produto = obter_input("Digite o nome do produto: ")
+            descricao_produto = obter_input("Digite a descrição do produto: ")
                 
-                else:
-                    print("Obrigado por usar o programa!")
-                    break
-            
-            except ValueError:
-                print('opção deve ser 1 ou 2')
         except ValueError:
-            print("o valor precisa ser numérico!")
-            continue
+            print('\nINSIRA UM VALOR NUMÉRICO!')
