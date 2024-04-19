@@ -13,6 +13,9 @@ def obter_num_float(mensagem):
         print('\nINSIRA UM VALOR NUMÉRICO POSITIVO E ACIMA DE 0!')
         valor = float(input(mensagem))
     return valor
+
+def arredondar_decimal(num):
+    return round(num, 2)
     
 print('SEJA BEM-VINDO AO INSTOCK!')
 print('PARA INICIARMOS FORNEÇA AS INFORMAÇÕES ABAIXO POR FAVOR\n')
@@ -44,14 +47,14 @@ while True:
             print()
             tabela_cabecalho = ["DESCRIÇÃO", "VALOR", "%"]
             tabela_resultados = [
-                ["A. Preço de Venda", PV, "100"],
-                ["B. Custo de Aquisição (Fornecedor)", CP, (CP / PV) * 100],
-                ["C. Receita Bruta (A-B)", (PV - CP), ((PV - CP) / PV) * 100],
-                ["D. Custo Fixo/Administrativo", (PV * CF) / 100, CF],
-                ["E. Comissão de Vendas", (CV * PV) / 100, CV],
-                ["F. Impostos", (IV * PV) / 100, IV],
-                ["G. Outros custos (D+E+F)", ((PV * CF) / 100)+((CV * PV) / 100)+((IV * PV) / 100), CF + CV + IV],
-                ["H. Rentabilidade (C-G)", ((PV - CP) - (((PV * CF) / 100) + ((CV * PV) / 100) + ((IV * PV) / 100))), ML]
+                ["A. Preço de Venda", arredondar_decimal(PV), "100"],
+                ["B. Custo de Aquisição (Fornecedor)", arredondar_decimal(CP), arredondar_decimal((CP / PV) * 100)],
+                ["C. Receita Bruta (A-B)", arredondar_decimal((PV - CP)), arredondar_decimal(((PV - CP) / PV) * 100)],
+                ["D. Custo Fixo/Administrativo", arredondar_decimal((PV * CF) / 100), arredondar_decimal(CF)],
+                ["E. Comissão de Vendas", arredondar_decimal((CV * PV) / 100), arredondar_decimal(CV)],
+                ["F. Impostos", arredondar_decimal((IV * PV) / 100), arredondar_decimal(IV)],
+                ["G. Outros custos (D+E+F)", arredondar_decimal(((PV * CF) / 100)+((CV * PV) / 100)+((IV * PV) / 100)), arredondar_decimal((CF + CV + IV))],
+                ["H. Rentabilidade (C-G)", arredondar_decimal(((PV - CP) - (((PV * CF) / 100) + ((CV * PV) / 100) + ((IV * PV) / 100)))), arredondar_decimal(ML)]
             ]  
             print(tabulate(tabela_resultados, headers = tabela_cabecalho))
             
