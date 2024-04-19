@@ -75,6 +75,39 @@ while True:
             #H. Rentabilidade (C-G)
             rentabilidade = bruto - resto
             print('a rentabilidade foi de', round(rentabilidade), 'que é igual a', round(ML), '% do valor final')
+
+            #Faixa de lucro do produto
+            if rentabilidade >= 0.20 * PV:
+              print('sua classificação é de nivel alto')
+              
+            elif rentabilidade >= 0.10 * PV < 0.20 * PV:
+              print('sua classificação é de nivel médio')
+              
+            elif rentabilidade > 0 * 100 < 0.10 * 100:
+              print('sua classificação é de nivel baixo')
+              
+            elif rentabilidade == 0:
+              print('sua classificação é de nivel equilibrado')
+              
+            else:
+              rentabilidade < 0 * 100
+              print('sua classificação é de prejuizo')
+              
+            #Opção de continuar
+            try:  
+                opcao = int(input('deseja continuar? ' ' 1 = sim ' ' 2 = nao'))
+                if opcao > 2 or opcao < 1:
+                    print('opção deve ser 1 ou 2')
+                
+                elif opcao == 1:
+                    print('ok')
+                
+                else:
+                    print("Obrigado por usar o programa!")
+                    break
+            
+            except ValueError:
+                print('opção deve ser 1 ou 2')
         except ValueError:
             print("o valor precisa ser numérico!")
             continue
