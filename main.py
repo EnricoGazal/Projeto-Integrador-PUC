@@ -78,11 +78,12 @@ while True:
                   
             #Opção de continuar
             continuar = input('\nDESEJA CONTINUAR UTILIZANDO O PROGRAMA? [S/N]: ').upper()
+            while continuar != 'S' and continuar != 'N':
+                print('\nDIGITE SOMENTE OPÇÕES ENTRE "S" e "N"!')
+                continuar = input('\nDESEJA CONTINUAR UTILIZANDO O PROGRAMA? [S/N]: ').upper()
             if continuar == 'N':
                 print('\nOBRIGADO POR USAR ESTE PROGRAMA!')
                 break
-            elif continuar != 'S' and continuar != 'N':
-                print('\nDIGITE SOMENTE OPÇÕES ENTRE "S" e "N"!')
                 
             print('\nINSIRA AS INFORMAÇÕES DO PRÓXIMO PRODUTO')
             cod_produto = obter_input("Digite o código do produto: ") #chave primária
