@@ -60,21 +60,19 @@ while True:
             
             
             #Faixa de lucro do produto
-            rentabilidade = ((PV - CP) - (CF + CV + IV))
-            if rentabilidade >= 0.20 * PV:
+            if ML >= 20:
                 print('\nSua classificação de rentabilidade é de nivel alto')
                   
-            elif rentabilidade >= 0.10 * PV < 0.20 * PV:
+            elif ML >= 10 and ML < 20:
                 print('\nSua classificação de rentabilidade é de nivel médio')
                   
-            elif rentabilidade > 0 * 100 < 0.10 * 100:
+            elif ML > 0 and ML < 10:
                 print('\nSua classificação de rentabilidade é de nivel baixo')
                   
-            elif rentabilidade == 0:
+            elif ML == 0:
                 print('\nSua classificação de rentabilidade é de nivel equilibrado')
                   
             else:
-                rentabilidade < 0 * 100
                 print('\nSua classificação de rentabilidade é de prejuizo')
                   
                   
