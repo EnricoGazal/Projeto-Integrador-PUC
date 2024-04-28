@@ -1,12 +1,36 @@
+import mysql.connector
 from tabulate import tabulate
 
+#Configuração do banco de dados
+try:
+    conexao_bd = mysql.connector.connect(
+        host="172.16.12.14", #IP servidor da PUC
+        user="nome_de_usuario",
+        password="senha_do_usuario",
+        database="nome_do_banco_de_dados"
+    )
+    print('CONECTADO COM SUCESSO!')
+except Exception:
+    print(Exception)
+
+def executar_query(query):
+    executor_sql = conexao_bd.cursor()
+    try:
+        executor_sql.execute(query)
+        conexao_bd.commit()
+        print("'",query,"'", "- REALIZADO COM SUCESSO")
+    except Exception:
+        print(Exception)
+
+#Função para obter o valor de um input
 def obter_input(mensagem):
     valor = input(mensagem)
     while not valor.strip():
         print('\nINSIRA UM VALOR VÁLIDO!')
         valor = input(mensagem)
     return valor
-    
+
+#Função para obter um valor do tipo float em um input  
 def obter_num_float(mensagem):
     valor = float(input(mensagem))
     while valor <= 0:
