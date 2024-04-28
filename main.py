@@ -37,6 +37,9 @@ def obter_num_float(mensagem):
         print('\nINSIRA UM VALOR NUMÉRICO POSITIVO E ACIMA DE 0!')
         valor = float(input(mensagem))
     return valor
+
+def arredondar_decimal(num):
+    return round(num, 2)
     
 print('SEJA BEM-VINDO AO INSTOCK!')
 print('PARA INICIARMOS FORNEÇA AS INFORMAÇÕES ABAIXO POR FAVOR\n')
@@ -68,44 +71,43 @@ while True:
             print()
             tabela_cabecalho = ["DESCRIÇÃO", "VALOR", "%"]
             tabela_resultados = [
-                ["A. Preço de Venda", PV, "100"],
-                ["B. Custo de Aquisição (Fornecedor)", CP, (CP / PV) * 100],
-                ["C. Receita Bruta (A-B)", (PV - CP), ((PV - CP) / PV) * 100],
-                ["D. Custo Fixo/Administrativo", (PV * CF) / 100, CF],
-                ["E. Comissão de Vendas", (CV * PV) / 100, CV],
-                ["F. Impostos", (IV * PV) / 100, IV],
-                ["G. Outros custos (D+E+F)", ((PV * CF) / 100)+((CV * PV) / 100)+((IV * PV) / 100), CF + CV + IV],
-                ["H. Rentabilidade (C-G)", ((PV - CP) - (((PV * CF) / 100) + ((CV * PV) / 100) + ((IV * PV) / 100))), ML]
+                ["A. Preço de Venda", arredondar_decimal(PV), "100"],
+                ["B. Custo de Aquisição (Fornecedor)", arredondar_decimal(CP), arredondar_decimal((CP / PV) * 100)],
+                ["C. Receita Bruta (A-B)", arredondar_decimal((PV - CP)), arredondar_decimal(((PV - CP) / PV) * 100)],
+                ["D. Custo Fixo/Administrativo", arredondar_decimal((PV * CF) / 100), arredondar_decimal(CF)],
+                ["E. Comissão de Vendas", arredondar_decimal((CV * PV) / 100), arredondar_decimal(CV)],
+                ["F. Impostos", arredondar_decimal((IV * PV) / 100), arredondar_decimal(IV)],
+                ["G. Outros custos (D+E+F)", arredondar_decimal(((PV * CF) / 100)+((CV * PV) / 100)+((IV * PV) / 100)), arredondar_decimal((CF + CV + IV))],
+                ["H. Rentabilidade (C-G)", arredondar_decimal(((PV - CP) - (((PV * CF) / 100) + ((CV * PV) / 100) + ((IV * PV) / 100)))), arredondar_decimal(ML)]
             ]  
             print(tabulate(tabela_resultados, headers = tabela_cabecalho))
             
             
             #Faixa de lucro do produto
-            rentabilidade = ((PV - CP) - (CF + CV + IV))
-            if rentabilidade >= 0.20 * PV:
+            if ML >= 20:
                 print('\nSua classificação de rentabilidade é de nivel alto')
                   
-            elif rentabilidade >= 0.10 * PV < 0.20 * PV:
+            elif ML >= 10 and ML < 20:
                 print('\nSua classificação de rentabilidade é de nivel médio')
                   
-            elif rentabilidade > 0 * 100 < 0.10 * 100:
+            elif ML > 0 and ML < 10:
                 print('\nSua classificação de rentabilidade é de nivel baixo')
                   
-            elif rentabilidade == 0:
+            elif ML == 0:
                 print('\nSua classificação de rentabilidade é de nivel equilibrado')
                   
             else:
-                rentabilidade < 0 * 100
                 print('\nSua classificação de rentabilidade é de prejuizo')
                   
                   
             #Opção de continuar
             continuar = input('\nDESEJA CONTINUAR UTILIZANDO O PROGRAMA? [S/N]: ').upper()
+            while continuar != 'S' and continuar != 'N':
+                print('\nDIGITE SOMENTE OPÇÕES ENTRE "S" e "N"!')
+                continuar = input('\nDESEJA CONTINUAR UTILIZANDO O PROGRAMA? [S/N]: ').upper()
             if continuar == 'N':
                 print('\nOBRIGADO POR USAR ESTE PROGRAMA!')
                 break
-            elif continuar != 'S' and continuar != 'N':
-                print('\nDIGITE SOMENTE OPÇÕES ENTRE "S" e "N"!')
                 
             print('\nINSIRA AS INFORMAÇÕES DO PRÓXIMO PRODUTO')
             cod_produto = obter_input("Digite o código do produto: ") #chave primária
