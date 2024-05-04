@@ -34,19 +34,19 @@ def executar_query(query):
         print(f'ERRO AO EXECUTAR QUERY: {e}\n')
 
 #Função para obter o valor de um input
-def obter_input(mensagem):
-    valor = input(mensagem)
+def obter_input(texto):
+    valor = input(texto)
     while not valor.strip():
         print('\nINSIRA UM VALOR VÁLIDO!')
-        valor = input(mensagem)
+        valor = input(texto)
     return valor
 
 #Função para obter um valor do tipo float em um input  
-def obter_num_float(mensagem):
-    valor = round(float(input(mensagem)), 2)
+def obter_num_float(numero):
+    valor = round(float(input(numero)), 2)
     while valor <= 0:
         print('\nINSIRA UM VALOR NUMÉRICO POSITIVO E ACIMA DE 0!')
-        valor = round(float(input(mensagem)), 2)
+        valor = round(float(input(numero)), 2)
     return valor
     
 print('SEJA BEM-VINDO AO INSTOCK!')
