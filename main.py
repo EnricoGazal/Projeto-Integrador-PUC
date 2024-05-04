@@ -16,7 +16,7 @@ except Exception:
 def inserir_dados(produtos_insert, dados):
     executor_sql = conexao_bd.cursor()
     try:
-        executor_sql.execute(produtos_insert,dados)
+        executor_sql.execute(produtos_insert, dados)
         conexao_bd.commit()
         print("DADOS DO PRODUTO INSERIDOS COM SUCESSO!")
     except Exception:
@@ -110,7 +110,7 @@ while True:
 
             #Inserindo os dados dos produtos da tabela
             produtos_insert = "insert into PRODUTOS (Cod_produto, Nome_produto, Descricao_produto, CP, CF, CV, IV , ML) values (%s, %s, %s, %s, %s, %s, %s, %s)"
-            dados = (cod_produto, nome_produto, descricao_produto, CP, CF, CV, IV, ML)
+            dados = cod_produto, nome_produto, descricao_produto, CP, CF, CV, IV, ML
             inserir = inserir_dados(produtos_insert, dados)
                    
             #Opção de continuar
