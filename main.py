@@ -13,41 +13,56 @@ try:
     if conexao_bd.is_connected():
         executor_sql = conexao_bd.cursor() #executor de comandos SQL
 except Error as e:
-    print(f'ERRO AO CONECTAR AO BANCO DE DADOS: {e}\n')
+    print(f'\nERRO AO CONECTAR AO BANCO DE DADOS: {e}\n')
 
+# Função para inserir um produto
 def inserir_produto(produtos_insert, dados):
     try:
         executor_sql.execute(produtos_insert, dados)
         conexao_bd.commit()
     except Error as e:
-        print(f'ERRO AO INSERIR PRODUTO: {e}\n')
+        print(f'\nERRO AO INSERIR PRODUTO: {e}\n')
 
-def consultar_dados(dado, cod_produto):
+# Função para consultar um dado especifico de um certo produto
+def consultar_produto(dado, cod_produto):
     try:
         executor_sql.execute('SELECT column_name FROM information_schema.columns WHERE table_name = "PRODUTOS"')
         colunas_tabela = [item[0] for item in executor_sql.fetchall()]
-        # resultado = executor_sql.fetchall() - recupera os dados gerados pela query
-        #transforma o array de dados obtidos em um array de strings para consulta
-        # colunas_tabela = []
-        # for item in resultado:
-        #     colunas_tabela.append(item[0])
         
         if dado in colunas_tabela:
             executor_sql.execute(f'SELECT {dado} FROM PRODUTOS WHERE Cod_produto = {cod_produto}')
             resultado = executor_sql.fetchone()
             return resultado[0] #pega o primeiro item dos dados que no caso será o dado solicitado
-        else: print(f'"{dado}" NÃO EXISTE NA TABELA!')
+        else: print(f'\n"{dado}" NÃO EXISTE NA TABELA!')
     except Error as e:
         print(f'\nERRO AO CONSULTAR DADO: {e}\n')
 
-def excluir_produto(cod_produto):
+# Função para atualizar um produto especifico
+def atualizar_produto(dado, novo_valor, cod_produto):
     try:
-        executor_sql.execute(f'SELECT * FROM PRODUTOS WHERE Cod_produto LIKE {cod_produto}')
-        resultado = executor_sql.fetchall()
+        executor_sql.execute(f'SELECT * FROM PRODUTOS WHERE Cod_produto = {cod_produto}')
+        resultado = executor_sql.fetchone()
 
         if resultado:
-            print(f'\nCÓDIGO DO PRODUTO: {consultar_dados('Cod_produto', cod_produto)}')
-            print(f'NOME DO PRODUTO: {consultar_dados('Nome_produto', cod_produto)}')
+            antigo_valor = consultar_produto(dado, cod_produto)
+            executor_sql.execute(f'UPDATE PRODUTOS SET {dado} = {novo_valor} WHERE Cod_produto = {cod_produto}')
+            conexao_bd.commit()
+            print(f'\nPRODUTO ATUALIZADO!')
+            print(f'\n{dado} = {antigo_valor} -> {dado} = {novo_valor}')
+
+        else: print('\nPRODUTO NÃO EXISTENTE!') 
+    except Error as e:
+        print(f'\nERRO AO ATUALIZAR PRODUTO: {e}')
+
+# Função para excluir um produto especifico
+def excluir_produto(cod_produto):
+    try:
+        executor_sql.execute(f'SELECT * FROM PRODUTOS WHERE Cod_produto = {cod_produto}')
+        resultado = executor_sql.fetchone()
+
+        if resultado:
+            print(f'\nCÓDIGO DO PRODUTO: {consultar_produto('Cod_produto', cod_produto)}')
+            print(f'NOME DO PRODUTO: {consultar_produto('Nome_produto', cod_produto)}')
 
             resposta = obter_input('\nGOSTARIA DE EXCLUIR O PRODUTO ACIMA? [S/N]: ').upper()
             while resposta not in ['S', 'N']:
@@ -59,8 +74,9 @@ def excluir_produto(cod_produto):
                 print('\nPRODUTO EXCLUÍDO COM SUCESSO!')
         else: print('\nPRODUTO NÃO EXISTENTE!')
     except Error as e:
-        print(f'ERRO AO EXCLUIR PRODUTO: {e}\n')
+        print(f'\nERRO AO EXCLUIR PRODUTO: {e}\n')
 
+# Função para listar todos os produtos do banco de dados
 def listar_produtos():
     try:
         executor_sql.execute('SELECT * FROM PRODUTOS')
@@ -69,17 +85,17 @@ def listar_produtos():
         if len(produtos) > 0:
             for dados_produto in produtos:
                 cod_produto = dados_produto[0]
-                print(f'\nCÓDIGO DO PRODUTO: {consultar_dados('Cod_produto', cod_produto)}')
-                print(f'NOME DO PRODUTO: {consultar_dados('Nome_produto', cod_produto)}')
-                print(f'DESCRIÇÃO DO PRODUTO: {consultar_dados('Descricao_produto', cod_produto)}')
-                print(f'CUSTO DO PRODUTO: R$ {consultar_dados('CP', cod_produto)}')
-                print(f'CUSTO FIXO DO PRODUTO: {consultar_dados('CF', cod_produto)}%')
-                print(f'COMISSÃO DE VENDAS: {consultar_dados('CV', cod_produto)}%')
-                print(f'IMPOSTOS DO PRODUTO: {consultar_dados('IV', cod_produto)}%')
-                print(f'RENTABILIDADE DO PRODUTO: {consultar_dados('ML', cod_produto)}%')
+                print(f'\nCÓDIGO DO PRODUTO: {consultar_produto('Cod_produto', cod_produto)}')
+                print(f'NOME DO PRODUTO: {consultar_produto('Nome_produto', cod_produto)}')
+                print(f'DESCRIÇÃO DO PRODUTO: {consultar_produto('Descricao_produto', cod_produto)}')
+                print(f'CUSTO DO PRODUTO: R$ {consultar_produto('CP', cod_produto)}')
+                print(f'CUSTO FIXO DO PRODUTO: {consultar_produto('CF', cod_produto)}%')
+                print(f'COMISSÃO DE VENDAS: {consultar_produto('CV', cod_produto)}%')
+                print(f'IMPOSTOS DO PRODUTO: {consultar_produto('IV', cod_produto)}%')
+                print(f'RENTABILIDADE DO PRODUTO: {consultar_produto('ML', cod_produto)}%')
         else: print('\nVOCÊ NÃO POSSUE PRODUTOS!')
     except Error as e:
-        print(f'ERRO AO LISTAR PRODUTOS: {e}\n')
+        print(f'\nERRO AO LISTAR PRODUTOS: {e}\n')
 
 #Função para obter o valor de um input
 def obter_input(texto):
@@ -100,6 +116,24 @@ def obter_num_float(numero):
             return valor
         except ValueError:
             print('\nINSIRA UM VALOR NUMÉRICO!')
+
+# Função para criar menu de opções
+def opcaoEscolhida(mnu):
+    print ()
+
+    opcoesValidas=[]
+    posicao=0
+    while posicao<len(mnu):
+        print (posicao+1,') ',mnu[posicao],sep='')
+        opcoesValidas.append(str(posicao+1))
+        posicao+=1
+
+    print()
+    opcao = obter_input('Qual é a sua opção? ')
+    while opcao not in opcoesValidas:
+        print('\nOPÇÃO INVÁLIDA!')
+        opcao = obter_input('Qual é a sua opção? ')
+    return opcao
     
 print('SEJA BEM-VINDO AO INSTOCK!')
 print('PARA INICIARMOS FORNEÇA AS INFORMAÇÕES ABAIXO POR FAVOR\n')
@@ -144,27 +178,27 @@ while True:
             tabela_cabecalho = ["DESCRIÇÃO", "VALOR", "%"]
             tabela_resultados = [
                 ["A. Preço de Venda", PV, "100"],
-                ["B. Custo de Aquisição (Fornecedor)", consultar_dados('CP', cod_produto), calculo_custo_aquisicao],
+                ["B. Custo de Aquisição (Fornecedor)", consultar_produto('CP', cod_produto), calculo_custo_aquisicao],
                 ["C. Receita Bruta (A-B)", (PV - CP), calculo_receita_bruta],
-                ["D. Custo Fixo/Administrativo", calculo_custo_fixo, consultar_dados('CF', cod_produto)],
-                ["E. Comissão de Vendas", calculo_comissao_vendas, consultar_dados('CV', cod_produto)],
-                ["F. Impostos", calculo_impostos, consultar_dados('IV', cod_produto)],
+                ["D. Custo Fixo/Administrativo", calculo_custo_fixo, consultar_produto('CF', cod_produto)],
+                ["E. Comissão de Vendas", calculo_comissao_vendas, consultar_produto('CV', cod_produto)],
+                ["F. Impostos", calculo_impostos, consultar_produto('IV', cod_produto)],
                 ["G. Outros custos (D+E+F)", calculo_outros_custos, (CF + CV + IV)],
-                ["H. Rentabilidade (C-G)", calculo_rentabilidade, consultar_dados('ML', cod_produto)]
+                ["H. Rentabilidade (C-G)", calculo_rentabilidade, consultar_produto('ML', cod_produto)]
             ]  
             print(tabulate(tabela_resultados, headers = tabela_cabecalho))
             
             #Faixa de lucro do produto
-            if consultar_dados('ML', cod_produto) >= 20:
+            if consultar_produto('ML', cod_produto) >= 20:
                 print('\nSua classificação de rentabilidade é de nivel ALTO')
                   
-            elif consultar_dados('ML', cod_produto) >= 10 and consultar_dados('ML', cod_produto) < 20:
+            elif consultar_produto('ML', cod_produto) >= 10 and consultar_produto('ML', cod_produto) < 20:
                 print('\nSua classificação de rentabilidade é de nivel MÉDIO')
                   
-            elif consultar_dados('ML', cod_produto) > 0 and consultar_dados('ML', cod_produto) < 10:
+            elif consultar_produto('ML', cod_produto) > 0 and consultar_produto('ML', cod_produto) < 10:
                 print('\nSua classificação de rentabilidade é de nivel BAIXO')
                   
-            elif consultar_dados('ML', cod_produto) == 0:
+            elif consultar_produto('ML', cod_produto) == 0:
                 print('\nSua classificação de rentabilidade é de nivel EQUILIBRADO')
                   
             else:
