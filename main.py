@@ -15,15 +15,21 @@ try:
 except Error as e:
     print(f'\nERRO AO CONECTAR AO BANCO DE DADOS: {e}\n')
 
-# Função para inserir um produto
-def inserir_produto(produtos_insert, dados):
+#Função para inserir um produto
+def inserir_produto(produtos_insert, dados): #def inserir_produto(produto)
     try:
+        # executor_sql.execute(f'SELECT * FROM PRODUTOS WHERE Cod_produto = {produto[0]}')
+        # resultado = executor_sql.fetchone()
+        # if not resultado:
+        #     executor_sql.execute(f'insert into PRODUTOS (Cod_produto, Nome_produto, Descricao_produto, PV, CP, RB, CF, CV, IV, OC, ML) values ({produto[0]}, {produto[1]}, {produto[2]}, {produto[3]}, {produto[4]}, {produto[5]}, {produto[6]}, {produto[7]}, {produto[8]}, {produto[9]}, {produto[10]})')
+        # else: print('\nESTE PRODUTO JÁ EXISTE!')
+
         executor_sql.execute(produtos_insert, dados)
         conexao_bd.commit()
     except Error as e:
         print(f'\nERRO AO INSERIR PRODUTO: {e}\n')
 
-# Função para consultar um dado especifico de um certo produto
+#Função para consultar um dado especifico de um certo produto
 def consultar_produto(dado, cod_produto):
     try:
         executor_sql.execute('SELECT column_name FROM information_schema.columns WHERE table_name = "PRODUTOS"')
@@ -37,7 +43,7 @@ def consultar_produto(dado, cod_produto):
     except Error as e:
         print(f'\nERRO AO CONSULTAR DADO: {e}\n')
 
-# Função para atualizar um produto especifico
+#Função para atualizar um produto especifico
 def atualizar_produto(dado, novo_valor, cod_produto):
     try:
         executor_sql.execute(f'SELECT * FROM PRODUTOS WHERE Cod_produto = {cod_produto}')
@@ -45,16 +51,19 @@ def atualizar_produto(dado, novo_valor, cod_produto):
 
         if resultado:
             antigo_valor = consultar_produto(dado, cod_produto)
-            executor_sql.execute(f'UPDATE PRODUTOS SET {dado} = {novo_valor} WHERE Cod_produto = {cod_produto}')
-            conexao_bd.commit()
-            print(f'\nPRODUTO ATUALIZADO!')
-            print(f'\n{dado} = {antigo_valor} -> {dado} = {novo_valor}')
-
+            if antigo_valor == novo_valor: print('\nESSA INFORMAÇÃO JÁ ESTÁ ARMAZENADA!')
+            else:
+                if isinstance(novo_valor, str): #verifica se o valor é uma string
+                    novo_valor = f'"{novo_valor}"'
+                executor_sql.execute(f'UPDATE PRODUTOS SET {dado} = {novo_valor} WHERE Cod_produto = {cod_produto}')
+                conexao_bd.commit()
+                print(f'\nPRODUTO ATUALIZADO!')
+                print(f'{dado} = {antigo_valor} -> {dado} = {novo_valor}')
         else: print('\nPRODUTO NÃO EXISTENTE!') 
     except Error as e:
         print(f'\nERRO AO ATUALIZAR PRODUTO: {e}')
 
-# Função para excluir um produto especifico
+#Função para excluir um produto especifico
 def excluir_produto(cod_produto):
     try:
         executor_sql.execute(f'SELECT * FROM PRODUTOS WHERE Cod_produto = {cod_produto}')
@@ -76,7 +85,7 @@ def excluir_produto(cod_produto):
     except Error as e:
         print(f'\nERRO AO EXCLUIR PRODUTO: {e}\n')
 
-# Função para listar todos os produtos do banco de dados
+#Função para listar todos os produtos do banco de dados
 def listar_produtos():
     try:
         executor_sql.execute('SELECT * FROM PRODUTOS')
@@ -117,7 +126,7 @@ def obter_num_float(numero):
         except ValueError:
             print('\nINSIRA UM VALOR NUMÉRICO!')
 
-# Função para criar menu de opções
+#Função para criar menu de opções
 def opcaoEscolhida(mnu):
     print ()
 
@@ -164,26 +173,36 @@ while True:
             # dados = (cod_produto, nome_produto, descricao_produto, CP, CF, CV, IV, ML)
             # inserir = inserir_produto(produtos_insert, dados)
             
-            #Fórmula Preço de Venda
-            PV = round((CP / (1 - ((CF + CV + IV + ML) / 100))), 2)
-            calculo_custo_aquisicao = round((CP / PV) * 100, 2)
+            PV = round((CP / (1 - ((CF + CV + IV + ML) / 100))), 2) #preço de venda
+            calculo_custo_aquisicao = round((CP / PV) * 100, 2) 
+            RB = PV - CP  #receita bruta
             calculo_receita_bruta = round(((PV - CP) / PV) * 100, 2)
             calculo_custo_fixo = round((PV * CF) / 100, 2)
             calculo_comissao_vendas = round((CV * PV) / 100, 2)
-            calculo_impostos = round((IV * PV) / 100, 2)
+            calculo_impostos = round((IV * PV) / 100, 2)       
+            OC = CF + CV + IV #outros custos
             calculo_outros_custos = calculo_custo_fixo + calculo_comissao_vendas + calculo_impostos
             calculo_rentabilidade = calculo_receita_bruta - calculo_outros_custos
+
+            #Preparando dados para inserir na tabela PRODUTOS
+            produto = [cod_produto, nome_produto, descricao_produto, PV, CP, RB, CF, CV, IV, OC, ML]
+
+            #Preparando dados para inserir na tabela CALCULOS
+            calculos = [cod_produto, calculo_custo_aquisicao, calculo_receita_bruta, calculo_custo_fixo, calculo_comissao_vendas, calculo_impostos, calculo_outros_custos, calculo_rentabilidade]
+
+            # inserir_produto(produto)
+            # inserir_calculos(calculos)
             
             print()
             tabela_cabecalho = ["DESCRIÇÃO", "VALOR", "%"]
             tabela_resultados = [
-                ["A. Preço de Venda", PV, "100"],
+                ["A. Preço de Venda", PV, "100"], #consultar_produto('PV', cod_produto)
                 ["B. Custo de Aquisição (Fornecedor)", consultar_produto('CP', cod_produto), calculo_custo_aquisicao],
-                ["C. Receita Bruta (A-B)", (PV - CP), calculo_receita_bruta],
+                ["C. Receita Bruta (A-B)", RB, calculo_receita_bruta], #consultar_produto('RB', cod_produto)
                 ["D. Custo Fixo/Administrativo", calculo_custo_fixo, consultar_produto('CF', cod_produto)],
                 ["E. Comissão de Vendas", calculo_comissao_vendas, consultar_produto('CV', cod_produto)],
                 ["F. Impostos", calculo_impostos, consultar_produto('IV', cod_produto)],
-                ["G. Outros custos (D+E+F)", calculo_outros_custos, (CF + CV + IV)],
+                ["G. Outros custos (D+E+F)", calculo_outros_custos, OC], #consultar_produto('OC', cod_produto)
                 ["H. Rentabilidade (C-G)", calculo_rentabilidade, consultar_produto('ML', cod_produto)]
             ]  
             print(tabulate(tabela_resultados, headers = tabela_cabecalho))
@@ -204,17 +223,18 @@ while True:
             else:
                 print('\nSua classificação de rentabilidade é de PREJUIZO')
                    
-            # Opção de continuar
-            continuar = obter_input('\nDESEJA CONTINUAR UTILIZANDO O PROGRAMA? [S/N]: ').upper()
+            #Opção de continuar
+            continuar = obter_input('\nDeseja continuar utilizando o programa? [S/N]: ').upper()
             while continuar not in ['S', 'N']:
                 print('\nDIGITE SOMENTE OPÇÕES ENTRE "S" e "N"!')
-                continuar = obter_input('\nDESEJA CONTINUAR UTILIZANDO O PROGRAMA? [S/N]: ').upper()
+                continuar = obter_input('\nDeseja continuar utilizando o programa? [S/N]: ').upper()
             if continuar == 'N':
                 executor_sql.close()
                 conexao_bd.close()
                 print('\nOBRIGADO POR USAR ESTE PROGRAMA!')
                 break
                 
+            #Prepara o código para o próximo produto
             print('\nINSIRA AS INFORMAÇÕES DO PRÓXIMO PRODUTO!\n')
                 
         except Exception:
