@@ -81,6 +81,7 @@ def listar_produtos():
     except Error as e:
         print(f'ERRO AO LISTAR PRODUTOS: {e}\n')
 
+
 #Função para obter o valor de um input
 def obter_input(texto):
     valor = input(texto)
