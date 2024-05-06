@@ -145,8 +145,65 @@ def opcaoEscolhida(mnu):
         opcao = obter_input('Qual é a sua opção? ')
     return opcao
     
+#Inserindo os dados dos produtos da tabela
+def adquirindo_dados():
+    while True:
+            try:
+                cod_produto = obter_input("Digite o código do produto: ") #chave primária
+                nome_produto = obter_input("Digite o nome do produto: ")
+                descricao_produto = obter_input("Digite a descrição do produto: ")
+
+                #custo do produto
+                CP = obter_num_float("Digite o custo do produto (R$): ")
+                
+                #custo fixo/administrativo
+                CF = obter_num_float("Digite o custo do fixo (%): ")
+                    
+                #comissão de vendas
+                CV = obter_num_float("Digite a comissão sobre a venda (%): ")
+                    
+                #impostos 
+                IV = obter_num_float("Digite o valor dos impostos (%): ")
+                    
+                #rentabilidade
+                ML = obter_num_float("Digite a rentabilidade desejada (%): ")
+
+                produtos_insert = "insert into PRODUTOS (Cod_produto, Nome_produto,Descricao_produto, CP, CF, CV, IV , ML) values (%s, %s, %s, %s, %s, %s, %s, %s)"
+                dados = (cod_produto, nome_produto, descricao_produto, CP, CF, CV, IV, ML)
+                inserir_produto(produtos_insert, dados)
+
+                return cod_produto, descricao_produto, CP, CF, CV, IV, ML
+
+            except Exception:
+                print(Exception)
+    
 print('SEJA BEM-VINDO AO INSTOCK!')
-print('PARA INICIARMOS FORNEÇA AS INFORMAÇÕES ABAIXO POR FAVOR\n')
+print('PARA INICIAR, ESCOLHA UMA DAS OPÇÕES A BAIXO:\n')
+agenda=[]
+
+menu=['Inserir Produto',\
+      'Consultar um dado',\
+      'Listar os produtos',\
+      'Atualizar um dado',\
+      'Excluir um produto',\
+      'Sair do Programa']
+
+opcao=666
+while opcao!=6:
+    opcao = int(opcaoEscolhida(menu))
+
+    if opcao==1:
+        adquirindo_dados()
+    elif opcao==2:
+        #consultar dados
+        print()
+    elif opcao==3:
+        listar_produtos()
+    elif opcao==4:
+        codigo = input("Digite o código do produto que irá atualizar: ")
+        atualizar_produto(codigo)
+    elif opcao==5:
+        excluir_produto()
 
 while True:
         try:
