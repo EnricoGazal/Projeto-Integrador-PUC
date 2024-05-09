@@ -19,13 +19,11 @@ except Error as e:
 #Função para inserir um produto
 def inserir_produto(produto):
     try:
-        executor_sql.execute(f'SELECT * FROM PRODUTOS WHERE Cod_produto = {produto[0]}')
-        resultado = executor_sql.fetchone()
-        if not resultado:
-            executor_sql.execute(f'insert into PRODUTOS (Cod_produto, Nome_produto, Descricao_produto, PV, CP, RB, CF, CV, IV, OC, ML) values ({produto[0]}, "{produto[1]}", "{produto[2]}", {produto[3]}, {produto[4]}, {produto[5]}, {produto[6]}, {produto[7]}, {produto[8]}, {produto[9]}, {produto[10]})')
-            conexao_bd.commit()
-            print("PRODUTO CADASTRADO COM SUCESSO!")
-        else: print('\nESTE PRODUTO JÁ EXISTE!')
+       
+        executor_sql.execute(f'insert into PRODUTOS (Cod_produto, Nome_produto, Descricao_produto, PV, CP, RB, CF, CV, IV, OC, ML) values ({produto[0]}, "{produto[1]}", "{produto[2]}", {produto[3]}, {produto[4]}, {produto[5]}, {produto[6]}, {produto[7]}, {produto[8]}, {produto[9]}, {produto[10]})')
+        conexao_bd.commit()
+        print()
+        print("PRODUTO CADASTRADO COM SUCESSO!")
 
     except Error as e:
         print(f'\nERRO AO INSERIR PRODUTO: {e}\n')
@@ -100,6 +98,8 @@ def listar_produtos():
                 print(f'NOME DO PRODUTO: {consultar_produto('Nome_produto', cod_produto)}')
                 print(f'DESCRIÇÃO DO PRODUTO: {consultar_produto('Descricao_produto', cod_produto)}')
                 print(f'CUSTO DO PRODUTO: R$ {consultar_produto('CP', cod_produto)}')
+                print(f'RECEITA BRUTA : R$ {consultar_produto('RB', cod_produto)}')
+                print(f'OUTROS CUSTOS: R$ {consultar_produto('OC', cod_produto)}')
                 print(f'CUSTO FIXO DO PRODUTO: {consultar_produto('CF', cod_produto)}%')
                 print(f'COMISSÃO DE VENDAS: {consultar_produto('CV', cod_produto)}%')
                 print(f'IMPOSTOS DO PRODUTO: {consultar_produto('IV', cod_produto)}%')
@@ -151,9 +151,18 @@ def opcaoEscolhida(mnu):
     
 #Função que pega dados do produto caso o usuário escolha cadastrar um produto
 def pegar_dados():
-    while True:
+    dados_inseridos = False
+    while not dados_inseridos:
             try:
                 cod_produto = obter_input("Digite o código do produto: ") #chave primária
+                
+                #Verificando se o produto já existe logo no input do código
+                executor_sql.execute(f'SELECT * FROM PRODUTOS WHERE Cod_produto = {cod_produto}')
+                resultado = executor_sql.fetchone()
+                if resultado:
+                    print("ESSE CÓDIGO JÁ FOI REGISTRADO!")
+                    continue
+
                 nome_produto = obter_input("Digite o nome do produto: ")
                 descricao_produto = obter_input("Digite a descrição do produto: ")
 
@@ -222,8 +231,10 @@ def pegar_dados():
                 else:
                     print('\nSua classificação de rentabilidade é de PREJUIZO')
 
+                dados_inseridos = True
+
             except(Exception):
-                print(Exception)
+                print("DIGITE UM CÓDIGO VÁLIDO!")
 
 #Inicio do programa
 print('SEJA BEM-VINDO AO INSTOCK!')
