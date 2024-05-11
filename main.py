@@ -57,15 +57,26 @@ def opcaoEscolhida(mnu):
 #Função para inserir um produto
 def inserir_produto(produto):
     try:
-       
-        executor_sql.execute(f'insert into PRODUTOS (Cod_produto, Nome_produto, Descricao_produto, PV, CP, RB, CF, CV, IV, OC, ML) values ({produto[0]}, "{produto[1]}", "{produto[2]}", {produto[3]}, {produto[4]}, {produto[5]}, {produto[6]}, {produto[7]}, {produto[8]}, {produto[9]}, {produto[10]})')
+        executor_sql.execute(f'insert into PRODUTOS (Cod_produto, Nome_produto, Descricao_produto, CP, CF, CV, IV, ML) values ({produto[0]}, "{produto[1]}", "{produto[2]}", {produto[3]}, {produto[4]}, {produto[5]}, {produto[6]}, {produto[7]})')
         conexao_bd.commit()
         print()
         print("PRODUTO CADASTRADO COM SUCESSO!")
-
     except Error as e:
         print(f'\nERRO AO INSERIR PRODUTO: {e}\n')
-
+        
+#Função para consultar um dado especifico de um certo produto
+def consultar_produto(dado, cod_produto):
+    try:
+        executor_sql.execute('SELECT column_name FROM information_schema.columns WHERE table_name = "PRODUTOS"')
+        colunas_tabela = [item[0] for item in executor_sql.fetchall()]
+        
+        if dado in colunas_tabela:
+            executor_sql.execute(f'SELECT {dado} FROM PRODUTOS WHERE Cod_produto = {cod_produto}')
+            resultado = executor_sql.fetchone()
+            return resultado[0] #pega o primeiro item dos dados que no caso será o dado solicitado
+        else: print(f'\n"{dado}" NÃO EXISTE NA TABELA!')
+    except Error as e:
+        print(f'\nERRO AO CONSULTAR DADO: {e}\n')
 #Função para consultar um dado especifico de um certo produto
 def consultar_produto(dado, cod_produto):
     try:
