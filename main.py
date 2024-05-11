@@ -175,11 +175,12 @@ def atualizar():
     try:
         cod_produto = obter_input("Digite o código do produto que deseja atualizar: ")
         dado = obter_input("Digite o dado que deseja atualizar:")
+        
         if dado in ['CP', 'CF', 'CV', 'IV', 'ML']:
             novo_valor = obter_num_float("Digite o novo valor para esse dado: ")
-        else: novo_valor = input("Digite o novo valor para esse dado: ")
-
-        executor_sql.execute(f'SELECT * FROM PRODUTOS WHERE Cod_produto = {cod_produto}')
+        else: novo_valor = obter_input("Digite o novo valor para esse dado: ")
+        
+        executor_sql.execute(f'SELECT * FROM PRODUTOS WHERE Cod_produto = "{cod_produto}"')
         resultado = executor_sql.fetchone()
 
         if resultado:
@@ -193,6 +194,10 @@ def atualizar():
                 conexao_bd.commit()
                 print(f'\nPRODUTO ATUALIZADO!')
                 print(f'{dado} = {antigo_valor} -> {dado} = {novo_valor}')
+                
+                if dado in ['CP', 'CF', 'CV', 'IV', 'ML']:
+                    calcular(cod_produto)
+                    
         else: print('\nPRODUTO NÃO EXISTENTE!') 
     except Error as e:
         print(f'\nERRO AO ATUALIZAR PRODUTO: {e}')
