@@ -184,7 +184,16 @@ def consultar():
         produto = executor_sql.fetchone()
 
         if produto:
-            dssa
+            print(f'\nCÓDIGO DO PRODUTO: {consultar_dado('Cod_produto', cod_produto)}')
+            print(f'NOME DO PRODUTO: {consultar_dado('Nome_produto', cod_produto)}')
+            print(f'DESCRIÇÃO DO PRODUTO: {consultar_dado('Descricao_produto', cod_produto)}')
+            print(f'CUSTO DO PRODUTO: R$ {consultar_dado('CP', cod_produto)}')
+            print(f'CUSTO FIXO DO PRODUTO: {consultar_dado('CF', cod_produto)}%')
+            print(f'COMISSÃO DE VENDAS: {consultar_dado('CV', cod_produto)}%')
+            print(f'IMPOSTOS DO PRODUTO: {consultar_dado('IV', cod_produto)}%')
+            print(f'RENTABILIDADE DO PRODUTO: {consultar_dado('ML', cod_produto)}%')
+
+            calcular(cod_produto)
 
     except Error as e:
         print(f'ERRO AO CONSULTAR PRODUTO: {e}')
@@ -319,13 +328,7 @@ while opcao!=6:
             cadastrar()
     
         elif opcao==2:
-            cod_produto = obter_input("Digite o código do produto: ")
-            dado = obter_input("Digite o dado que deseja consultar: ")
-    
-            txt = f"O {dado} do produto de código {cod_produto} é: {consultar_dado(dado, cod_produto)}"
-            fazer_linhas(txt)
-            print(txt)
-            fazer_linhas(txt)
+            consultar()
     
         elif opcao==3:
             atualizar()
