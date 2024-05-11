@@ -216,19 +216,16 @@ def listar():
         if len(produtos) > 0:
             for dados_produto in produtos:
                 cod_produto = dados_produto[0]
-                print(f'\nCÓDIGO DO PRODUTO: {consultar_produto('Cod_produto', cod_produto)}')
+                print(f'CÓDIGO DO PRODUTO: {consultar_produto('Cod_produto', cod_produto)}')
                 print(f'NOME DO PRODUTO: {consultar_produto('Nome_produto', cod_produto)}')
                 print(f'DESCRIÇÃO DO PRODUTO: {consultar_produto('Descricao_produto', cod_produto)}')
                 print(f'CUSTO DO PRODUTO: R$ {consultar_produto('CP', cod_produto)}')
-                print(f'RECEITA BRUTA : R$ {consultar_produto('RB', cod_produto)}')
-                print(f'OUTROS CUSTOS: R$ {consultar_produto('OC', cod_produto)}')
                 print(f'CUSTO FIXO DO PRODUTO: {consultar_produto('CF', cod_produto)}%')
                 print(f'COMISSÃO DE VENDAS: {consultar_produto('CV', cod_produto)}%')
                 print(f'IMPOSTOS DO PRODUTO: {consultar_produto('IV', cod_produto)}%')
                 print(f'RENTABILIDADE DO PRODUTO: {consultar_produto('ML', cod_produto)}%')
-                print("")
-                print('-------------------------------------')
-        else: print('\nVOCÊ NÃO POSSUI PRODUTOS!')
+                print('\n-------------------------------------\n')
+        else: print('\nVOCÊ NÃO POSSUE PRODUTOS!')
     except Error as e:
         print(f'\nERRO AO LISTAR PRODUTOS: {e}\n')
 
