@@ -54,6 +54,13 @@ def opcaoEscolhida(mnu):
         opcao = obter_input('Qual é a sua opção? ')
     return opcao
 
+#Função decorativa que exibe a quantidade de '-' (traços) igual o tamanho do texto recebido
+def fazer_linhas(string):
+    linhas = ''
+    for caracter in string:
+        linhas += '-'
+    print(linhas)
+
 #Função para inserir um produto
 def inserir_produto(produto):
     try:
@@ -64,19 +71,6 @@ def inserir_produto(produto):
     except Error as e:
         print(f'\nERRO AO INSERIR PRODUTO: {e}\n')
         
-#Função para consultar um dado especifico de um certo produto
-def consultar_produto(dado, cod_produto):
-    try:
-        executor_sql.execute('SELECT column_name FROM information_schema.columns WHERE table_name = "PRODUTOS"')
-        colunas_tabela = [item[0] for item in executor_sql.fetchall()]
-        
-        if dado in colunas_tabela:
-            executor_sql.execute(f'SELECT {dado} FROM PRODUTOS WHERE Cod_produto = {cod_produto}')
-            resultado = executor_sql.fetchone()
-            return resultado[0] #pega o primeiro item dos dados que no caso será o dado solicitado
-        else: print(f'\n"{dado}" NÃO EXISTE NA TABELA!')
-    except Error as e:
-        print(f'\nERRO AO CONSULTAR DADO: {e}\n')
 #Função para consultar um dado especifico de um certo produto
 def consultar_produto(dado, cod_produto):
     try:
@@ -276,27 +270,30 @@ menu=['CADASTRAR PRODUTO',\
 
 opcao=666
 while opcao!=6:
-
-    opcao = int(opcaoEscolhida(menu))
-
-    if opcao==1:
-        cadastrar()
-
-    elif opcao==2:
-        cod_produto = obter_input("Digite o código do produto: ")
-        dado = obter_input("Digite o dado que deseja consultar: ")
-
-        print("----------------------------------------")
-        print(f"O {dado} do produto de código {cod_produto} é: {consultar_produto(dado, cod_produto)}")
-        print("----------------------------------------")
-
-    elif opcao==3:
-        atualizar()
-
-    elif opcao==4:
-        listar()
-
-    elif opcao==5:
-        excluir()
+    try: 
+        opcao = int(opcaoEscolhida(menu))
+    
+        if opcao==1:
+            cadastrar()
+    
+        elif opcao==2:
+            cod_produto = obter_input("Digite o código do produto: ")
+            dado = obter_input("Digite o dado que deseja consultar: ")
+    
+            txt = f"O {dado} do produto de código {cod_produto} é: {consultar_produto(dado, cod_produto)}"
+            fazer_linhas(txt)
+            print(txt)
+            fazer_linhas(txt)
+    
+        elif opcao==3:
+            atualizar()
+    
+        elif opcao==4:
+            listar()
+    
+        elif opcao==5:
+            excluir()
+    except KeyboardInterrupt:
+        print("\nPROGRAMA INTERROMPIDO!\n")
 
 print('\nOBRIGADO POR UTILIZAR O PROGRAMA!\n')
