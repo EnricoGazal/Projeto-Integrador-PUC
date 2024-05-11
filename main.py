@@ -72,7 +72,7 @@ def inserir_produto(produto):
         print(f'\nERRO AO INSERIR PRODUTO: {e}\n')
         
 #Função para consultar um dado especifico de um certo produto
-def consultar_produto(dado, cod_produto):
+def consultar_dado(dado, cod_produto):
     try:
         executor_sql.execute('SELECT column_name FROM information_schema.columns WHERE table_name = "PRODUTOS"')
         colunas_tabela = [item[0] for item in executor_sql.fetchall()]
@@ -87,11 +87,11 @@ def consultar_produto(dado, cod_produto):
 
 #Função para exibir os cálculos de um produto
 def calcular(cod_produto):
-    CP = consultar_produto('CP', cod_produto)
-    CF = consultar_produto('CF', cod_produto)
-    CV = consultar_produto('CV', cod_produto)
-    IV = consultar_produto('IV', cod_produto)
-    ML = consultar_produto('ML', cod_produto)
+    CP = consultar_dado('CP', cod_produto)
+    CF = consultar_dado('CF', cod_produto)
+    CV = consultar_dado('CV', cod_produto)
+    IV = consultar_dado('IV', cod_produto)
+    ML = consultar_dado('ML', cod_produto)
         
     PV = round((CP / (1 - ((CF + CV + IV + ML) / 100))), 2) #preço de venda
     RB = PV - CP  #receita bruta
@@ -110,7 +110,7 @@ def calcular(cod_produto):
     # inserir_calculos(calculos)
         
     print()
-    print(f'PRODUTO: {consultar_produto('Nome_produto', cod_produto)}')
+    print(f'PRODUTO: {consultar_dado('Nome_produto', cod_produto)}')
     tabela_cabecalho = ["DESCRIÇÃO", "VALOR", "%"]
     tabela_resultados = [
         ["A. Preço de Venda", PV, "100"],
@@ -189,7 +189,7 @@ def atualizar():
         resultado = executor_sql.fetchone()
 
         if resultado:
-            antigo_valor = consultar_produto(dado, cod_produto)
+            antigo_valor = consultar_dado(dado, cod_produto)
             if antigo_valor == novo_valor:
                 print('\nESSA INFORMAÇÃO JÁ ESTÁ ARMAZENADA!')
             else:
@@ -216,14 +216,14 @@ def listar():
         if len(produtos) > 0:
             for dados_produto in produtos:
                 cod_produto = dados_produto[0]
-                print(f'CÓDIGO DO PRODUTO: {consultar_produto('Cod_produto', cod_produto)}')
-                print(f'NOME DO PRODUTO: {consultar_produto('Nome_produto', cod_produto)}')
-                print(f'DESCRIÇÃO DO PRODUTO: {consultar_produto('Descricao_produto', cod_produto)}')
-                print(f'CUSTO DO PRODUTO: R$ {consultar_produto('CP', cod_produto)}')
-                print(f'CUSTO FIXO DO PRODUTO: {consultar_produto('CF', cod_produto)}%')
-                print(f'COMISSÃO DE VENDAS: {consultar_produto('CV', cod_produto)}%')
-                print(f'IMPOSTOS DO PRODUTO: {consultar_produto('IV', cod_produto)}%')
-                print(f'RENTABILIDADE DO PRODUTO: {consultar_produto('ML', cod_produto)}%')
+                print(f'CÓDIGO DO PRODUTO: {consultar_dado('Cod_produto', cod_produto)}')
+                print(f'NOME DO PRODUTO: {consultar_dado('Nome_produto', cod_produto)}')
+                print(f'DESCRIÇÃO DO PRODUTO: {consultar_dado('Descricao_produto', cod_produto)}')
+                print(f'CUSTO DO PRODUTO: R$ {consultar_dado('CP', cod_produto)}')
+                print(f'CUSTO FIXO DO PRODUTO: {consultar_dado('CF', cod_produto)}%')
+                print(f'COMISSÃO DE VENDAS: {consultar_dado('CV', cod_produto)}%')
+                print(f'IMPOSTOS DO PRODUTO: {consultar_dado('IV', cod_produto)}%')
+                print(f'RENTABILIDADE DO PRODUTO: {consultar_dado('ML', cod_produto)}%')
                 print('\n-------------------------------------\n')
         else: print('\nVOCÊ NÃO POSSUE PRODUTOS!')
     except Error as e:
@@ -237,8 +237,8 @@ def excluir():
         resultado = executor_sql.fetchone()
 
         if resultado:
-            print(f'\nCÓDIGO DO PRODUTO: {consultar_produto('Cod_produto', cod_produto)}')
-            print(f'NOME DO PRODUTO: {consultar_produto('Nome_produto', cod_produto)}')
+            print(f'\nCÓDIGO DO PRODUTO: {consultar_dado('Cod_produto', cod_produto)}')
+            print(f'NOME DO PRODUTO: {consultar_dado('Nome_produto', cod_produto)}')
 
             resposta = obter_input('\nGOSTARIA DE EXCLUIR O PRODUTO ACIMA? [S/N]: ').upper()
             while resposta not in ['S', 'N']:
@@ -277,7 +277,7 @@ while opcao!=6:
             cod_produto = obter_input("Digite o código do produto: ")
             dado = obter_input("Digite o dado que deseja consultar: ")
     
-            txt = f"O {dado} do produto de código {cod_produto} é: {consultar_produto(dado, cod_produto)}"
+            txt = f"O {dado} do produto de código {cod_produto} é: {consultar_dado(dado, cod_produto)}"
             fazer_linhas(txt)
             print(txt)
             fazer_linhas(txt)
