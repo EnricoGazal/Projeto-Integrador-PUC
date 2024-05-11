@@ -175,21 +175,75 @@ def cadastrar():
 
         dados_inseridos = True
 
+#Função para consultar todas as informações de um certo produto
+def consultar():
+    try:
+        cod_produto = obter_input("Digite o código do produto: ")
+
+        executor_sql.execute(f'SELECT * FROM PRODUTOS WHERE Cod_produto = "{cod_produto}"')
+        produto = executor_sql.fetchone()
+
+        if produto:
+            print(f'\nCÓDIGO DO PRODUTO: {consultar_dado('Cod_produto', cod_produto)}')
+            print(f'NOME DO PRODUTO: {consultar_dado('Nome_produto', cod_produto)}')
+            print(f'DESCRIÇÃO DO PRODUTO: {consultar_dado('Descricao_produto', cod_produto)}')
+            print(f'CUSTO DO PRODUTO: R$ {consultar_dado('CP', cod_produto)}')
+            print(f'CUSTO FIXO DO PRODUTO: {consultar_dado('CF', cod_produto)}%')
+            print(f'COMISSÃO DE VENDAS: {consultar_dado('CV', cod_produto)}%')
+            print(f'IMPOSTOS DO PRODUTO: {consultar_dado('IV', cod_produto)}%')
+            print(f'RENTABILIDADE DO PRODUTO: {consultar_dado('ML', cod_produto)}%')
+
+            calcular(cod_produto)
+
+    except Error as e:
+        print(f'ERRO AO CONSULTAR PRODUTO: {e}')
+
 #Função para atualizar um produto especifico
 def atualizar():
     try:
-        cod_produto = obter_input("Digite o código do produto que deseja atualizar: ")
-        dado = obter_input("Digite o dado que deseja atualizar:")
-        
-        if dado in ['CP', 'CF', 'CV', 'IV', 'ML']:
-            novo_valor = obter_num_float("Digite o novo valor para esse dado: ")
-        else: novo_valor = obter_input("Digite o novo valor para esse dado: ")
+        cod_produto = obter_input("Digite o código do produto que deseja atualizar: ")      
         
         executor_sql.execute(f'SELECT * FROM PRODUTOS WHERE Cod_produto = "{cod_produto}"')
         resultado = executor_sql.fetchone()
 
         if resultado:
+            dado = None
+            novo_valor = None
+
+            print('Qual dado você gostaria de atualizar?')
+            menu=['Nome do produto',\
+                'Descrição do produto',\
+                'Custo de produto',\
+                'Custo fixo',\
+                'Comissão de vendas',\
+                'Impostos',\
+                'Rentabilidade',\
+                'Sair']
+            
+            while dado == None:
+                opcao = int(opcaoEscolhida(menu))
+
+                if opcao == 1:
+                    dado = 'Nome_produto'
+                elif opcao == 2:
+                    dado = 'Descricao_produto'
+                elif opcao == 3:
+                    dado = 'CP'
+                elif opcao == 4:
+                    dado = 'CF'
+                elif opcao == 5:
+                    dado = 'CV'
+                elif opcao == 6:
+                    dado = 'IV'
+                elif opcao == 7:
+                    dado = 'ML'
+                else: break
+
             antigo_valor = consultar_dado(dado, cod_produto)
+            if dado in ['CP', 'CF', 'CV', 'IV', 'ML']:
+                novo_valor = obter_num_float("Digite o novo valor para esse dado: ")
+            else: novo_valor = obter_input("Digite o novo valor para esse dado: ")
+            
             if antigo_valor == novo_valor:
                 print('\nESSA INFORMAÇÃO JÁ ESTÁ ARMAZENADA!')
             else:
@@ -274,13 +328,7 @@ while opcao!=6:
             cadastrar()
     
         elif opcao==2:
-            cod_produto = obter_input("Digite o código do produto: ")
-            dado = obter_input("Digite o dado que deseja consultar: ")
-    
-            txt = f"O {dado} do produto de código {cod_produto} é: {consultar_dado(dado, cod_produto)}"
-            fazer_linhas(txt)
-            print(txt)
-            fazer_linhas(txt)
+            consultar()
     
         elif opcao==3:
             atualizar()
