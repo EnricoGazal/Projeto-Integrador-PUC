@@ -43,8 +43,14 @@ def consultar_produto(dado, cod_produto):
         print(f'\nERRO AO CONSULTAR DADO: {e}\n')
 
 #Função para atualizar um produto especifico
-def atualizar_produto(cod_produto, dado, novo_valor):
+def atualizar():
     try:
+        cod_produto = obter_input("Digite o código do produto que deseja atualizar: ")
+        dado = obter_input("Digite o dado que deseja atualizar:")
+        if dado in ['CP', 'CF', 'CV', 'IV', 'ML']:
+            novo_valor = obter_num_float("Digite o novo valor para esse dado: ")
+        else: novo_valor = input("Digite o novo valor para esse dado: ")
+
         executor_sql.execute(f'SELECT * FROM PRODUTOS WHERE Cod_produto = {cod_produto}')
         resultado = executor_sql.fetchone()
 
@@ -64,8 +70,9 @@ def atualizar_produto(cod_produto, dado, novo_valor):
         print(f'\nERRO AO ATUALIZAR PRODUTO: {e}')
 
 #Função para excluir um produto especifico
-def excluir_produto(cod_produto):
+def excluir():
     try:
+        cod_produto = obter_input("Digite o código do produto que deseja excluir: ")
         executor_sql.execute(f'SELECT * FROM PRODUTOS WHERE Cod_produto = {cod_produto}')
         resultado = executor_sql.fetchone()
 
@@ -86,7 +93,7 @@ def excluir_produto(cod_produto):
         print(f'\nERRO AO EXCLUIR PRODUTO: {e}\n')
 
 #Função para listar todos os produtos do banco de dados
-def listar_produtos():
+def listar():
     try:
         executor_sql.execute('SELECT * FROM PRODUTOS')
         produtos = [produto for produto in executor_sql.fetchall()]
@@ -150,7 +157,7 @@ def opcaoEscolhida(mnu):
     return opcao
     
 #Função que pega dados do produto caso o usuário escolha cadastrar um produto
-def pegar_dados():
+def cadastrar():
     dados_inseridos = False
     while not dados_inseridos:
             try:
@@ -238,14 +245,14 @@ def pegar_dados():
 
 #Inicio do programa
 print('SEJA BEM-VINDO AO INSTOCK!')
-print('PARA INICIARMOS ESCOLHA UMA DAS OPÇÕES A BAIXO:\n')
+print('PARA INICIARMOS ESCOLHA UMA DAS OPÇÕES ABAIXO:\n')
 
 menu=['CADASTRAR PRODUTO',\
       'CONSULTAR DADO',\
       'ATUALIZAR INFORMAÇÃO',\
       'LISTAR PRODUTOS',\
       'EXCLUIR PRODUTO',\
-      'Sair do Programa']
+      'SAIR']
 
 opcao=666
 while opcao!=6:
@@ -253,27 +260,23 @@ while opcao!=6:
     opcao = int(opcaoEscolhida(menu))
 
     if opcao==1:
-        pegar_dados()
+        cadastrar()
 
     elif opcao==2:
-        cod_produto = input("Digite o código do produto: ")
-        dado = input("Digite o dado que deseja consultar: ")
+        cod_produto = obter_input("Digite o código do produto: ")
+        dado = obter_input("Digite o dado que deseja consultar: ")
 
         print("----------------------------------------")
-        print(f"O {dado} do produto de código {cod_produto} é: ", consultar_produto(dado, cod_produto))
+        print(f"O {dado} do produto de código {cod_produto} é: {consultar_produto(dado, cod_produto)}")
         print("----------------------------------------")
 
     elif opcao==3:
-        cod_produto = input("Digite o código do produto que deseja atualizar: ")
-        dado = input("Digite o dado que deseja atualizar:")
-        novo_valor = input("Digite o novo valor para esse dado: ")
-        atualizar_produto(cod_produto, dado, novo_valor)
+        atualizar()
 
     elif opcao==4:
-        listar_produtos()
+        listar()
 
     elif opcao==5:
-        cod_produto = input("Digite o código do produto que deseja excluir: ")
-        excluir_produto(cod_produto)
+        excluir()
 
 print('\nOBRIGADO POR UTILIZAR O PROGRAMA!\n')
