@@ -140,7 +140,7 @@ def calcular(cod_produto):
 def cadastrar():
     dados_inseridos = False
     while not dados_inseridos:
-        cod_produto = obter_input("Digite o código do produto: ") #chave primária
+        cod_produto = obter_input("\nDigite o código do produto: ") #chave primária
                 
         #Verificando se o produto já existe logo no input do código
         executor_sql.execute(f'SELECT * FROM PRODUTOS WHERE Cod_produto = "{cod_produto}"')
@@ -178,7 +178,7 @@ def cadastrar():
 #Função para consultar todas as informações de um certo produto
 def consultar():
     try:
-        cod_produto = obter_input("Digite o código do produto: ")
+        cod_produto = obter_input("\nDigite o código do produto que deseja consultar: ")
 
         executor_sql.execute(f'SELECT * FROM PRODUTOS WHERE Cod_produto = "{cod_produto}"')
         produto = executor_sql.fetchone()
@@ -194,6 +194,7 @@ def consultar():
             print(f'RENTABILIDADE DO PRODUTO: {consultar_dado('ML', cod_produto)}%')
 
             calcular(cod_produto)
+        else: print('\nPRODUTO NÃO CADASTRADO')
 
     except Error as e:
         print(f'ERRO AO CONSULTAR PRODUTO: {e}')
@@ -201,7 +202,7 @@ def consultar():
 #Função para atualizar um produto especifico
 def atualizar():
     try:
-        cod_produto = obter_input("Digite o código do produto que deseja atualizar: ")      
+        cod_produto = obter_input("\nDigite o código do produto que deseja atualizar: ")      
         
         executor_sql.execute(f'SELECT * FROM PRODUTOS WHERE Cod_produto = "{cod_produto}"')
         resultado = executor_sql.fetchone()
@@ -239,23 +240,24 @@ def atualizar():
                     dado = 'ML'
                 else: break
 
-            antigo_valor = consultar_dado(dado, cod_produto)
-            if dado in ['CP', 'CF', 'CV', 'IV', 'ML']:
-                novo_valor = obter_num_float("Digite o novo valor para esse dado: ")
-            else: novo_valor = obter_input("Digite o novo valor para esse dado: ")
-            
-            if antigo_valor == novo_valor:
-                print('\nESSA INFORMAÇÃO JÁ ESTÁ ARMAZENADA!')
-            else:
-                if isinstance(novo_valor, str): #verifica se o valor é uma string
-                    novo_valor = f'"{novo_valor}"'
-                executor_sql.execute(f'UPDATE PRODUTOS SET {dado} = {novo_valor} WHERE Cod_produto = {cod_produto}')
-                conexao_bd.commit()
-                print(f'\nPRODUTO ATUALIZADO!')
-                print(f'{dado} = {antigo_valor} -> {dado} = {novo_valor}')
-                
+            if dado != None:
+                antigo_valor = consultar_dado(dado, cod_produto)
                 if dado in ['CP', 'CF', 'CV', 'IV', 'ML']:
-                    calcular(cod_produto)
+                    novo_valor = obter_num_float("Digite o novo valor para esse dado: ")
+                else: novo_valor = obter_input("Digite o novo valor para esse dado: ")
+                
+                if antigo_valor == novo_valor:
+                    print('\nESSA INFORMAÇÃO JÁ ESTÁ ARMAZENADA!')
+                else:
+                    if isinstance(novo_valor, str): #verifica se o valor é uma string
+                        novo_valor = f'"{novo_valor}"'
+                    executor_sql.execute(f'UPDATE PRODUTOS SET {dado} = {novo_valor} WHERE Cod_produto = {cod_produto}')
+                    conexao_bd.commit()
+                    print(f'\nPRODUTO ATUALIZADO!')
+                    print(f'{dado} = {antigo_valor} -> {dado} = {novo_valor}')
+                    
+                    if dado in ['CP', 'CF', 'CV', 'IV', 'ML']:
+                        calcular(cod_produto)
                     
         else: print('\nPRODUTO NÃO EXISTENTE!') 
     except Error as e:
@@ -270,7 +272,7 @@ def listar():
         if len(produtos) > 0:
             for dados_produto in produtos:
                 cod_produto = dados_produto[0]
-                print(f'CÓDIGO DO PRODUTO: {consultar_dado('Cod_produto', cod_produto)}')
+                print(f'\nCÓDIGO DO PRODUTO: {consultar_dado('Cod_produto', cod_produto)}')
                 print(f'NOME DO PRODUTO: {consultar_dado('Nome_produto', cod_produto)}')
                 print(f'DESCRIÇÃO DO PRODUTO: {consultar_dado('Descricao_produto', cod_produto)}')
                 print(f'CUSTO DO PRODUTO: R$ {consultar_dado('CP', cod_produto)}')
@@ -278,7 +280,6 @@ def listar():
                 print(f'COMISSÃO DE VENDAS: {consultar_dado('CV', cod_produto)}%')
                 print(f'IMPOSTOS DO PRODUTO: {consultar_dado('IV', cod_produto)}%')
                 print(f'RENTABILIDADE DO PRODUTO: {consultar_dado('ML', cod_produto)}%')
-                print('\n-------------------------------------\n')
         else: print('\nVOCÊ NÃO POSSUE PRODUTOS!')
     except Error as e:
         print(f'\nERRO AO LISTAR PRODUTOS: {e}\n')
@@ -286,7 +287,7 @@ def listar():
 #Função para excluir um produto especifico
 def excluir():
     try:
-        cod_produto = obter_input("Digite o código do produto que deseja excluir: ")
+        cod_produto = obter_input("\nDigite o código do produto que deseja excluir: ")
         executor_sql.execute(f'SELECT * FROM PRODUTOS WHERE Cod_produto = {cod_produto}')
         resultado = executor_sql.fetchone()
 
@@ -305,12 +306,51 @@ def excluir():
         else: print('\nPRODUTO NÃO EXISTENTE!')
     except Error as e:
         print(f'\nERRO AO EXCLUIR PRODUTO: {e}\n')
-    
+
+def acessar():
+    acesso_liberado = False
+    while not acesso_liberado:
+        try:
+            nome_digitado = obter_input('Nome de usuário: ').lower()
+            senha_digitada = obter_input('Senha: ').lower()
+
+            executor_sql.execute(f'SELECT * FROM USUARIOS WHERE nome_usuario = "{nome_digitado}"')
+            usuario = executor_sql.fetchone()
+
+            if usuario:
+                nome_usuario = usuario[0]
+                senha_usuario = usuario[1]
+
+                while senha_usuario != senha_digitada:
+                    print('\nSENHA INCORRETADA\n')
+                    senha_digitada = obter_input('Senha: ').lower()
+
+                print(f'\nSEJA BEM-VINDO AO INSTOCK {nome_usuario}')
+                acesso_liberado = True
+            else: 
+                print('\nUSUÁRIO NÃO CADASTRADO!\n')
+
+                resposta = obter_input('GOSTARIA DE REALIZAR O CADASTRO? [S/N]: ').upper()
+                while resposta not in ['S', 'N']:
+                    print('\nDIGITE SOMENTE OPÇÕES ENTRE "S" e "N"!')
+                    resposta = obter_input('\nGOSTARIA DE REALIZAR O CADASTRO? [S/N]: ').upper()
+
+                if resposta == 'S':
+                    executor_sql.execute(f'insert into USUARIOS (nome_usuario, senha_usuario) values ("{nome_digitado}", "{senha_digitada}")')
+                    conexao_bd.commit()
+                    print('\nUSUÁRIO CADASTRADO!\n')
+                    print(f'SEJA BEM-VINDO AO INSTOCK {nome_digitado}')
+                    acesso_liberado = True
+        except Error as e:
+            print(f'\nERRO AO REALIZAR LOGIN: {e}\n') 
+        except KeyboardInterrupt:
+            print("\nPROGRAMA INTERROMPIDO!\n")
+
 
 
 #Inicio do programa
-print('SEJA BEM-VINDO AO INSTOCK!')
-print('PARA INICIARMOS ESCOLHA UMA DAS OPÇÕES ABAIXO:\n')
+acessar()
+print('PARA INICIARMOS ESCOLHA UMA DAS OPÇÕES ABAIXO:')
 
 menu=['CADASTRAR PRODUTO',\
       'CONSULTAR PRODUTO',\
