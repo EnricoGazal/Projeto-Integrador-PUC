@@ -265,11 +265,11 @@ def atualizar():
 def listar():
     try:
         executor_sql.execute('SELECT * FROM PRODUTOS')
-        produtos = [produto for produto in executor_sql.fetchall()]
+        lista_produtos = [produto for produto in executor_sql.fetchall()]
         
-        if len(produtos) > 0:
-            for dados_produto in produtos:
-                cod_produto = dados_produto[0]
+        if len(lista_produtos) > 0:
+            for produto in lista_produtos:
+                cod_produto = produto[0]
                 print(f'CÓDIGO DO PRODUTO: {consultar_dado('Cod_produto', cod_produto)}')
                 print(f'NOME DO PRODUTO: {consultar_dado('Nome_produto', cod_produto)}')
                 print(f'DESCRIÇÃO DO PRODUTO: {consultar_dado('Descricao_produto', cod_produto)}')
