@@ -141,7 +141,6 @@ def calcular(cod_produto):
 def cadastrar():
     dados_inseridos = False
     while not dados_inseridos:
-        try:
             cod_produto = obter_input("\nDigite o código do produto: ") #chave primária
                 
             #Verificando se o produto já existe logo no input do código
@@ -177,9 +176,6 @@ def cadastrar():
 
             dados_inseridos = True
 
-        except ProgrammingError:
-            print("DIGITE UM CÓDIGO VÁLIDO!")
-            continue
 
 #Função para consultar todas as informações de um certo produto
 def consultar():
