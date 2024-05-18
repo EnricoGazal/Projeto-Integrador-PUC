@@ -54,12 +54,25 @@ def opcaoEscolhida(mnu):
         opcao = obter_input('Qual é a sua opção? ')
     return opcao
 
-#Função decorativa que exibe a quantidade de '-' (traços) igual o tamanho do texto recebido
-def fazer_linhas(string):
-    linhas = ''
-    for caracter in string:
-        linhas += '-'
-    print(linhas)
+#Função para verificar se o produto existe no banco de dados
+def retorna_produto(cod_produto):
+    try:
+        executor_sql.execute(f'SELECT * FROM PRODUTOS WHERE Cod_produto = {cod_produto}')
+        resultado = executor_sql.fetchone()
+        if resultado: return resultado
+        else: return False
+    except Error as e:
+        print(f'\nERRO AO VERIFICAR PRODUTO: {e}\n')
+
+#Função que retorna os cálculos de um certo produto
+def retorna_calculos(cod_produto):
+    try:
+        executor_sql.execute(f'SELECT * FROM CALCULOS JOIN PRODUTOS ON CALCULOS.cod = PRODUTOS.Cod_produto WHERE PRODUTOS.Cod_produto = {cod_produto}')
+        resultado = executor_sql.fetchone()
+        if resultado: return resultado
+        else: return False
+    except Error as e:
+        print(f'\nERRO AO CONSULTAR CÁLCULOS: {e}\n')
 
 #Função para inserir um produto
 def inserir_produto(produto):
