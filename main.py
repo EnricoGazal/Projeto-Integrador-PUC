@@ -84,6 +84,22 @@ def inserir_produto(produto):
     except Error as e:
         print(f'\nERRO AO INSERIR PRODUTO: {e}\n')
         
+#Função para inserir os cálculos de um produto     
+def inserir_calculos(calculos):
+    try:
+        executor_sql.execute(f'insert into CALCULOS (cod, PV, RB, OC, calculo_custo_aquisicao, calculo_receita_bruta, calculo_custo_fixo, calculo_comissao_vendas, calculo_impostos, calculo_outros_custos, calculo_rentabilidade) values ({calculos[0]}, {calculos[1]}, {calculos[2]}, {calculos[3]}, {calculos[4]}, {calculos[5]}, {calculos[6]}, {calculos[7]}, {calculos[8]}, {calculos[9]}, {calculos[10]})')
+        conexao_bd.commit()
+    except Error as e:
+        print(f'\nERRO AO INSERIR CÁLCULOS: {e}\n')
+        
+#Função para atualizar os cálculos de um produto
+def atualizar_calculo(cod_calculo, calculo, novo_valor):
+    try:
+        executor_sql.execute(f'UPDATE CALCULOS SET {calculo} = {novo_valor} WHERE cod = {cod_calculo}')
+        conexao_bd.commit()
+    except Error as e:
+        print(f'\nERRO AO ATUALIZAR CÁLCULO {calculo}: {e}\n')
+
 #Função para consultar um dado especifico de um certo produto
 def consultar_dado(dado, cod_produto):
     try:
