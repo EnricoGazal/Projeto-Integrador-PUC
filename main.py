@@ -199,11 +199,10 @@ def calcular(produto):
         print('\nSua classificação de rentabilidade é de PREJUIZO')
     
 #Função que pega dados do produto caso o usuário escolha cadastrar um produto
-def cadastrar():
+def cadastrar(cod_produto):
     dados_inseridos = False
     while not dados_inseridos:
         try:
-            cod_produto = obter_input("\nDigite o código do produto: ")
             produto = retorna_produto(cod_produto)
         
             if produto:
@@ -240,9 +239,8 @@ def cadastrar():
             continue
 
 #Função para consultar todas as informações de um certo produto
-def consultar():
+def consultar(cod_produto):
     try:
-        cod_produto = obter_input("\nDigite o código do produto que deseja consultar: ")
         produto = retorna_produto(cod_produto)
 
         if produto:
@@ -300,9 +298,8 @@ def consultar():
         print(f'ERRO AO CONSULTAR PRODUTO: {e}')
 
 #Função para atualizar um produto especifico
-def atualizar():
+def atualizar(cod_produto):
     try:
-        cod_produto = obter_input("\nDigite o código do produto que deseja atualizar: ")      
         produto = retorna_produto(cod_produto)
 
         if produto:
@@ -382,9 +379,8 @@ def listar():
         print(f'\nERRO AO LISTAR PRODUTOS: {e}\n')
 
 #Função para excluir um produto especifico
-def excluir():
+def excluir(cod_produto):
     try:
-        cod_produto = obter_input("\nDigite o código do produto que deseja excluir: ")
         produto = retorna_produto(cod_produto)
 
         if produto:
@@ -403,13 +399,14 @@ def excluir():
     except Error as e:
         print(f'\nERRO AO EXCLUIR PRODUTO: {e}\n')
 
-def acessar():
+#Função para cadastrar o usuário ou verificar se o mesmo já está cadastrado
+def acessar(nome_digitado, senha_digitada):
     acesso_liberado = False
     while not acesso_liberado:
         try:
-            nome_digitado = obter_input('Nome de usuário: ').lower()
-            senha_digitada = obter_input('Senha: ').lower()
-
+            nome_digitado = nome_digitado.lower()
+            senha_digitada = senha_digitada.lower()
+            
             executor_sql.execute(f'SELECT * FROM USUARIOS WHERE nome_usuario = "{nome_digitado}"')
             usuario = executor_sql.fetchone()
 
@@ -444,7 +441,9 @@ def acessar():
 
 #Inicio do programa
 try:
-    acessar()
+    nome_digitado = obter_input('Nome de usuário: ')
+    senha_digitada = obter_input('Senha: ')
+    acessar(nome_digitado, senha_digitada)
 except KeyboardInterrupt:
     print("\nPROGRAMA INTERROMPIDO!\n")
     
@@ -463,19 +462,23 @@ while opcao!=6:
         opcao = int(opcaoEscolhida(menu))
     
         if opcao==1:
-            cadastrar()
+            cod_produto = obter_input("\nDigite o código do produto: ")
+            cadastrar(cod_produto)
     
         elif opcao==2:
-            consultar()
+            cod_produto = obter_input("\nDigite o código do produto que deseja consultar: ")
+            consultar(cod_produto)
     
         elif opcao==3:
-            atualizar()
+            cod_produto = obter_input("\nDigite o código do produto que deseja atualizar: ")   
+            atualizar(cod_produto)
     
         elif opcao==4:
             listar()
     
         elif opcao==5:
-            excluir()
+            cod_produto = obter_input("\nDigite o código do produto que deseja excluir: ")
+            excluir(cod_produto)
     except KeyboardInterrupt:
         print("\nPROGRAMA INTERROMPIDO!\n")
         
