@@ -100,20 +100,6 @@ def atualizar_calculo(cod_calculo, calculo, novo_valor):
         conexao_bd.commit()
     except Error as e:
         print(f'\nERRO AO ATUALIZAR CÁLCULO {calculo}: {e}\n')
-        
-#Função para consultar um dado especifico de um certo produto
-def consultar_dado(dado, cod_produto):
-    try:
-        executor_sql.execute('SELECT column_name FROM information_schema.columns WHERE table_name = "PRODUTOS"')
-        colunas_tabela = [item[0] for item in executor_sql.fetchall()]
-        
-        if dado in colunas_tabela:
-            executor_sql.execute(f'SELECT {dado} FROM PRODUTOS WHERE Cod_produto = {cod_produto}')
-            resultado = executor_sql.fetchone()
-            return resultado[0] #pega o primeiro item dos dados que no caso será o dado solicitado
-        else: print(f'\n"{dado}" NÃO EXISTE NA TABELA!')
-    except Error as e:
-        print(f'\nERRO AO CONSULTAR DADO: {e}\n')
 
 #Função para exibir os cálculos de um produto
 def calcular(produto):
