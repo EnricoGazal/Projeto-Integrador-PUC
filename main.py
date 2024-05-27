@@ -420,6 +420,7 @@ def acessar(nome_digitado, senha_digitada):
                     print('\nUSUÁRIO CADASTRADO!\n')
                     print(f'SEJA BEM-VINDO AO INSTOCK {nome_digitado}')
                     acesso_liberado = True
+                else: continue
         except Error as e:
             print(f'\nERRO AO REALIZAR LOGIN: {e}\n') 
 
